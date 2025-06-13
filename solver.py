@@ -1,4 +1,5 @@
 from enum import Enum, auto
+from typing import List, Tuple
 
 # define the different cell types in the hexagonal grid
 class CellType(Enum):
@@ -42,5 +43,11 @@ WORLD = {
     (5, 5): CellType.REWARD2
     }
 
-# define the size of the world (6 rows, 10 columns)
+# define the size of the world (6 rows, 19 columns)
 WORLD_SIZE = (6, 10) 
+
+# six axial directions (pointy-top)
+DIRS: List[Tuple[int, int]] = [
+    (+1, 0), (+1, -1), (0, -1),
+    (-1, 0), (-1, +1), (0, +1)
+]
