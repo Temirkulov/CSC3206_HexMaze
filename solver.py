@@ -3,14 +3,14 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from heapq import heappop, heappush
 from itertools import count
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
 
-# ────────────────────────── 1. Tile types ──────────────────────────
+#types of cells in the grid
 class CellType(Enum):
     EMPTY = auto()
     OBSTACLE = auto()
     TREASURE = auto()
-    TRAP1 = auto()     # ← ignored
+    TRAP1 = auto()
     TRAP2 = auto()
     TRAP3 = auto()
     TRAP4 = auto()
@@ -18,12 +18,11 @@ class CellType(Enum):
     REWARD2 = auto()
     ENTRY = auto()
 
-# Even-q axial neighbours (pointy-top)
+# directions for axial movement in a hexagonal grid
 EVEN_COL = [(-1, 0), (+1, 0), (0, +1), (0, -1), (+1, +1), (+1, -1)]
 ODD_COL  = [(-1, 0), (+1, 0), (0, +1), (0, -1), (-1, +1), (-1, -1)]
 
-# ────────────────────────── 2. World map (your latest dict) ─────────
-
+# dictionary of the grid
 WORLD: Dict[Tuple[int,int],CellType] = {
     # row r = 0
     (0,0):CellType.ENTRY,  (0,1):CellType.EMPTY,(0,2):CellType.EMPTY,
@@ -61,7 +60,7 @@ def walkable(p): return tile(p) not in {
     CellType.OBSTACLE, CellType.TRAP1, CellType.TRAP2,
     CellType.TRAP3, CellType.TRAP4}
 
-# ───────────── 3. State ───────────────────
+# representation of the state in the search
 @dataclass(frozen=True)
 class State:
     pos:  Tuple[int,int]
@@ -95,7 +94,7 @@ def h(st):
     # optimistic: future moves all at cheapest possible cost (0.5+0.5)
     return d * (st.sm * st.em)
 
-# ───────────── 4. A* search ───────────────
+# core A* search algorithm
 def solve():
     start = apply(ENTRY, 1.0, 1.0, ALL_MASK)
     pq, seen, ctr = [], set(), count()
@@ -113,7 +112,7 @@ def solve():
                          nxt,path+[nb],costs+[move_cost]))
     raise RuntimeError("No path")
 
-# ───────────── 5. Main ─────────────────────
+# execute the solver and print the results
 if __name__=="__main__":
     total,path,step_costs = solve()
     print(f"Total cost : {total}")
